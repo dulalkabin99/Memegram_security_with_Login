@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset=" UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,6 @@
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
@@ -24,6 +23,7 @@
 
 <div th:replace="base :: navlinks"></div>
 <div class="container bg">
+    Welcome, [[${#authentication.name}]]
 
 
     <a href="/add">
@@ -49,11 +49,10 @@
                 <td class="col-sm-4 col-md-3" th:text="${message.title}"></td>
                 <td class="col-sm-3 col-md-2" th:text="${message.user}"></td>
                 <td class="col-sm-12 col-md-5">
-                    <a th:href="@{/update/{id} (id=${message.id})}"> Update Meme &nbsp;</a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/update/{id} (id=${message.id})}"> Update Meme &nbsp;</a>
                     <a th:href="@{/detail/{id} (id=${message.id})}"> View Meme &nbsp; </a>
-                    <div sec:authorize="hasAuthority('ROLE_ADMIN')">
-                    <a th:href="@{/delete/{id} (id=${message.id})}"> Delete </a><br/>
-                    </div>
+                    <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/delete/{id} (id=${message.id})}"> Delete </a><br/>
+
                 </td>
 
             </tr>

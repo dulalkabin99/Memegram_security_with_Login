@@ -8,6 +8,8 @@ import com.dulal.memegram_security.Configurations.CloudinaryConfig;
 import com.dulal.memegram_security.Models.MemeGram;
 import com.dulal.memegram_security.Models.User;
 import com.dulal.memegram_security.Repos.ContentRepo;
+import com.dulal.memegram_security.Repos.RoleRepo;
+import com.dulal.memegram_security.Repos.UserRepo;
 import com.dulal.memegram_security.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Map;
@@ -28,15 +31,30 @@ public class HomeController {
     ContentRepo contentRepo;
 
     @Autowired
+    UserRepo userRepo;
+
+    @Autowired
+    RoleRepo roleRepo;
+
+    @Autowired
     CloudinaryConfig cloudc;
 
 
     @Autowired
     private UserService userService;
 
+
+    @RequestMapping("/login")
+    public String loginPage(){
+        return "login";
+    }
+
+
     @RequestMapping("/")
-    public String contentList(Model model) {
+    public String contentList(HttpServletRequest request, Model model) {
+
         model.addAttribute("contents", contentRepo.findAll());
+        model.addAttribute("user", userRepo.findAll());
         return "list";
 
     }
@@ -59,7 +77,7 @@ public class HomeController {
             userService.saveUser(user);
             model.addAttribute("message", "User Account SuccessFully Created");
         }
-        return  "login";
+        return  "redirect:/login";
     }
 
     @GetMapping("/add")
@@ -92,16 +110,10 @@ public class HomeController {
         return "redirect:/";
 
     }
-
-    @RequestMapping("/login")
-    public String loginPage(){
-        return "login";
-    }
-
-
     @RequestMapping("/detail/{id}")
     public String showDetail(@PathVariable("id") long id, Model model) {
         model.addAttribute("message", contentRepo.findById(id).get());
+        model.addAttribute("user", userRepo.findAll());
         return "detail";
     }
 
